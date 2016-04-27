@@ -47,23 +47,29 @@ class Finance(object):
 
     @staticmethod
     def add(uid, data):
-        pass
+        sql = "INSERT INTO finances VALUES (null, ?, ?, ?, ?, datetime())"
+        db.execute(sql, (uid, data['type'], data['amount'], data['comments']))
 
     @staticmethod
     def delete(fid):
-        pass
+        sql = "DELETE FROM finances WHERE id=?"
+        db.execute(sql, (fid, ))
 
     @staticmethod
-    def update(fid, data):
-        pass
+    def update(finance):
+        sql = "UPDATE finances SET type=?, amount=?, comments=? WHERE id=?"
+        db.execute(sql, (finance.type, finance.amount, finance.comments, finance.id))
 
     @staticmethod
     def get(fid):
-        pass
+        sql = "SELECT * FROM finances WHERE id=?"
+        result = db.select(sql, (fid,), is_fetchone=True)
+        if result:
+            return Finance(result)
 
     @staticmethod
     def get_list(uid):
-        sql = "SELECT * FROM finances WHERE id=? ORDER BY create_date DESC"
+        sql = "SELECT * FROM finances WHERE user_id=? ORDER BY create_date DESC"
         resultset = db.select(sql, (uid,))
         if resultset:
             return [Finance(result) for result in resultset]
